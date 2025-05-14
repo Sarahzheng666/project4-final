@@ -1,0 +1,106 @@
+---
+title: "Project 4 Report"
+author: "Yuanxi Zheng"
+subtitle: "STATS 220 Semester One 2025"
+output:
+  html_document:
+    theme: readable
+    toc: true
+---
+
+<style>
+body {
+  background-color: #fdf0d5;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: #333333;
+  line-height: 1.75;
+  padding: 30px;
+}
+
+h1, h2, h3 {
+  color: #3c096c;
+  border-bottom: 2px solid #d3d3d3;
+  padding-bottom: 5px;
+}
+
+p {
+  font-size: 17px;
+}
+
+code {
+  background-color: #f8f8f8;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+```
+
+## Introduction
+
+For this project, I revisited my Project 2 cafeteria observation study. I reused my original Google Form and added 20 new observations, focusing on queue length, food type, and any notable observations during lunch hour.
+
+The form was designed to be simple and fast to use, which allowed me and my helpers to record data quickly. These observations were collected in a busy university cafeteria, and the new data was automatically logged in a connected Google Sheet.
+
+My goal was to better understand the relationship between food preferences and how busy each stall was, and to add narrative context using text observations.
+
+---
+
+## Visualisation Summary
+
+I created three visualisations based on the updated dataset:
+
+### 1. Food Type Distribution
+
+The first bar chart shows the frequency of different food types being ordered. It provides a visual summary of student preferences.
+
+### 2. Queue Length by Food Type
+
+The second plot compares the average queue length across food types. This shows how food choice may influence how long people have to wait.
+
+### 3. Observational Comments – Keyword Detection
+
+The third chart uses text analysis to identify keywords like "slow" or "cut" from the comment field. This adds context and identifies unusual or interesting events.
+
+All three plots were generated using `ggplot2` and saved as `.png` files, which were then displayed in my visual data story.
+
+---
+
+## Code Tools Used
+
+In this project I used several tidyverse tools to process and visualise the data:
+
+- `read_csv()` to import data directly from a Google Sheet
+- `dplyr` for data cleaning (`rename`, `mutate`, `group_by`, `summarise`)
+- `stringr` for text detection in comments
+- `ggplot2` to generate bar plots and visual summaries
+- `knitr::include_graphics()` to display static plots in RMarkdown
+
+These tools made it easy to convert raw observations into clean and readable insights.
+
+---
+
+## Reflection
+
+Through this project I gained more confidence in using R for visual storytelling. I learned how to structure a simple observational study, how to convert observations into clean data, and how to create and style an HTML-based story.
+
+I also practiced embedding CSS directly into RMarkdown to enhance the visual appearance of my report. One challenge was aligning chart aesthetics with HTML layout, but I resolved this by adjusting image sizes and adding styling directly.
+
+Most importantly, I saw how even simple observations — like what people eat and how long they wait — can reveal interesting patterns when visualised carefully.
+
+---
+
+## GitHub Link
+
+Here is the link to my published GitHub Pages version of the visual data story:
+
+🔗 [https://sarahzheng666.github.io/project4/](https://sarahzheng666.github.io/project4/)
+
+---
+
+## End
+
+Thank you for reading this report!
