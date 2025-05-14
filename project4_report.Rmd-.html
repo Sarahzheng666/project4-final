@@ -220,6 +220,83 @@ window.buildTabsets = function(tocID) {
 };
 
 </script>
+<script>
+window.initializeCodeFolding = function(show) {
+
+  // handlers for show-all and hide all
+  $("#rmd-show-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('show');
+    });
+  });
+  $("#rmd-hide-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('hide');
+    });
+  });
+
+  // index for unique code element ids
+  var currentIndex = 1;
+
+  // select all R code blocks
+  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
+  rCodeBlocks.each(function() {
+    // skip if the block has fold-none class
+    if ($(this).hasClass('fold-none')) return;
+
+    // create a collapsable div to wrap the code in
+    var div = $('<div class="collapse r-code-collapse"></div>');
+    var showThis = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
+    var id = 'rcode-643E0F36' + currentIndex++;
+    div.attr('id', id);
+    $(this).before(div);
+    $(this).detach().appendTo(div);
+
+    // add a show code button right above
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
+    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
+    showCodeButton.append(showCodeText);
+    showCodeButton
+        .attr('data-toggle', 'collapse')
+        .attr('data-bs-toggle', 'collapse') // BS5
+        .attr('data-target', '#' + id)
+        .attr('data-bs-target', '#' + id)   // BS5
+        .attr('aria-expanded', showThis)
+        .attr('aria-controls', id);
+
+    var buttonRow = $('<div class="row"></div>');
+    var buttonCol = $('<div class="col-md-12"></div>');
+
+    buttonCol.append(showCodeButton);
+    buttonRow.append(buttonCol);
+
+    div.before(buttonRow);
+
+    // show the div if necessary
+    if (showThis) div.collapse('show');
+
+    // update state of button on show/hide
+    //   * Change text
+    //   * add a class for intermediate states styling
+    div.on('hide.bs.collapse', function () {
+      showCodeText.text('Show');
+      showCodeButton.addClass('btn-collapsing');
+    });
+    div.on('hidden.bs.collapse', function () {
+      showCodeButton.removeClass('btn-collapsing');
+    });
+    div.on('show.bs.collapse', function () {
+      showCodeText.text('Hide');
+      showCodeButton.addClass('btn-expanding');
+    });
+    div.on('shown.bs.collapse', function () {
+      showCodeButton.removeClass('btn-expanding');
+    });
+
+  });
+
+}
+</script>
 <style type="text/css">.hljs-literal {
 color: #990073;
 }
@@ -343,6 +420,9 @@ display: none;
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -358,6 +438,14 @@ display: none;
 
 
 <div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
 
@@ -383,6 +471,10 @@ Used</a></li>
 <li><a href="#reflection" id="toc-reflection">Reflection</a></li>
 <li><a href="#github-link" id="toc-github-link">GitHub Link</a></li>
 <li><a href="#end" id="toc-end">End</a></li>
+<li><a href="#thank-you-for-reading-this-report" id="toc-thank-you-for-reading-this-report">Thank you for reading this
+report!</a></li>
+<li><a href="#code-appendix" id="toc-code-appendix">Code
+Appendix</a></li>
 </ul>
 </div>
 
@@ -490,7 +582,63 @@ data story:</p>
 </div>
 <div id="end" class="section level2">
 <h2>End</h2>
-<p>Thank you for reading this report!</p>
+</div>
+<div id="thank-you-for-reading-this-report" class="section level2">
+<h2>Thank you for reading this report!</h2>
+</div>
+<div id="code-appendix" class="section level2">
+<h2>Code Appendix</h2>
+<p>Below is the R code I wrote and used in my
+<code>data_visualisation.R</code> file to produce the three static
+visualisations shown in the data story.</p>
+<pre class="r"><code>library(tidyverse)
+library(stringr)
+
+# Read the dataset from Google Sheet
+data_url &lt;- &quot;https://docs.google.com/spreadsheets/d/1ehSSLBWXz5UVCQPIX5Tr0pa0Wz6GDoakDDjipf9M0F0/export?format=csv&quot;
+raw_data &lt;- read_csv(data_url)
+
+# Rename columns for clarity
+cafeteria_data &lt;- raw_data %&gt;%
+  rename(
+    queue_length = `How many people are currently queuing in the cafeteria?`,
+    food_type = `What type of food do most people appear to be ordering?`,
+    comments = `Are there any other notable things you observed?`
+  )
+
+# Plot 1: Food type distribution
+plot1 &lt;- ggplot(cafeteria_data, aes(x = food_type)) +
+  geom_bar(fill = &quot;skyblue&quot;) +
+  labs(title = &quot;Distribution of Food Types&quot;,
+       x = &quot;Food Type&quot;, y = &quot;Count&quot;) +
+  theme_minimal()
+ggsave(&quot;plot1.png&quot;, plot1)
+
+# Plot 2: Average queue length by food type
+plot2 &lt;- cafeteria_data %&gt;%
+  group_by(food_type) %&gt;%
+  summarise(avg_queue = mean(queue_length, na.rm = TRUE)) %&gt;%
+  ggplot(aes(x = food_type, y = avg_queue)) +
+  geom_col(fill = &quot;steelblue&quot;) +
+  labs(title = &quot;Average Queue Length by Food Type&quot;,
+       x = &quot;Food Type&quot;, y = &quot;Average Queue Length&quot;) +
+  theme_minimal()
+ggsave(&quot;plot2.png&quot;, plot2)
+
+# Plot 3: Keyword detection in comments
+plot3 &lt;- cafeteria_data %&gt;%
+  mutate(comment_type = case_when(
+    str_detect(str_to_lower(comments), &quot;slow&quot;) ~ &quot;Mentions &#39;slow&#39;&quot;,
+    str_detect(str_to_lower(comments), &quot;cut&quot;) ~ &quot;Mentions &#39;cut&#39;&quot;,
+    TRUE ~ &quot;No keyword&quot;
+  )) %&gt;%
+  count(comment_type) %&gt;%
+  ggplot(aes(x = comment_type, y = n, fill = comment_type)) +
+  geom_col() +
+  labs(title = &quot;Occurrences of &#39;slow&#39; or &#39;cut&#39; in Comments&quot;,
+       x = &quot;Comment Type&quot;, y = &quot;Count&quot;) +
+  theme_minimal()
+ggsave(&quot;plot3.png&quot;, plot3)</code></pre>
 </div>
 
 
@@ -526,6 +674,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

@@ -1,12 +1,13 @@
 ---
 title: "Project 4 Report"
 author: "Yuanxi Zheng"
-subtitle: "STATS 220 Semester One 2025"
-output:
+output: 
   html_document:
+    self_contained: true
     theme: readable
     toc: true
 ---
+
 
 <style>
 body {
@@ -104,3 +105,65 @@ Here is the link to my published GitHub Pages version of the visual data story:
 ## End
 
 Thank you for reading this report!
+---
+
+## Code Appendix
+
+Below is the R code I wrote and used in my `data_visualisation.R` file to produce the three static visualisations shown in the data story.
+
+```r
+library(tidyverse)
+library(stringr)
+
+# Read the dataset from Google Sheet
+data_url <- "https://docs.google.com/spreadsheets/d/1ehSSLBWXz5UVCQPIX5Tr0pa0Wz6GDoakDDjipf9M0F0/export?format=csv"
+raw_data <- read_csv(data_url)
+
+# Rename columns for clarity
+cafeteria_data <- raw_data %>%
+  rename(
+    queue_length = `How many people are currently queuing in the cafeteria?`,
+    food_type = `What type of food do most people appear to be ordering?`,
+    comments = `Are there any other notable things you observed?`
+  )
+
+plot1 <- cafeteria_data %>%
+  count(food_type) %>%
+  ggplot(aes(x = n, y = reorder(food_type, n))) +
+  geom_point(size = 5, color = "tomato") +
+  labs(title = "Distribution of Food Types",
+       x = "Count", y = "Food Type") +
+  theme_minimal()
+ggsave("plot1.png", plot1)
+
+
+library(lubridate)
+
+plot2 <- cafeteria_data %>%
+  mutate(time = ymd_hms(Timestamp)) %>%
+  arrange(time) %>%
+  group_by(hour = hour(time)) %>%
+  summarise(avg_queue = mean(queue_length, na.rm = TRUE)) %>%
+  ggplot(aes(x = hour, y = avg_queue)) +
+  geom_line(color = "darkblue", size = 1.2) +
+  geom_point(color = "orange", size = 2) +
+  labs(title = "Average Queue Length by Hour of Day",
+       x = "Hour (24hr)", y = "Avg Queue Length") +
+  theme_minimal()
+ggsave("plot2.png", plot2)
+
+
+plot3 <- cafeteria_data %>%
+  mutate(comment_type = case_when(
+    str_detect(str_to_lower(comments), "slow") ~ "Mentions 'slow'",
+    str_detect(str_to_lower(comments), "cut") ~ "Mentions 'cut'",
+    TRUE ~ "No keyword"
+  )) %>%
+  count(comment_type) %>%
+  ggplot(aes(x = comment_type, y = n, fill = comment_type)) +
+  geom_col() +
+  labs(title = "Occurrences of 'slow' or 'cut' in Comments",
+       x = "Comment Type", y = "Count") +
+  theme_minimal()
+ggsave("plot3.png", plot3)
+```

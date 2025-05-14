@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Yuanxi Zheng" />
+
+
+<title>Cafeteria Data Story</title>
+
+<script src="visual_data_story_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="visual_data_story_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="visual_data_story_files/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="visual_data_story_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="visual_data_story_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="visual_data_story_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="visual_data_story_files/navigation-1.1/tabsets.js"></script>
+<link href="visual_data_story_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="visual_data_story_files/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Cafeteria Data Story</h1>
+<h4 class="author">Yuanxi Zheng</h4>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#food-preferences" id="toc-food-preferences">Food
+Preferences</a></li>
+<li><a href="#queue-length-by-food-type"
+id="toc-queue-length-by-food-type">Queue Length by Food Type</a></li>
+<li><a href="#interesting-observations"
+id="toc-interesting-observations">Interesting Observations</a></li>
+<li><a href="#conclusion" id="toc-conclusion">Conclusion</a></li>
+</ul>
+</div>
+
+<style>
+body {
+  background-color: #ffe6e6;  /* 撞色背景：淡粉红 */
+  font-family: "Futura", "Segoe UI", sans-serif;
+  color: #111111;
+  line-height: 1.75;
+  padding: 30px;
+}
+
+h1, h2, h3 {
+  color: #d00000; /* 深红标题 */
+  font-weight: 700;
+  border-bottom: 2px dashed #d00000;
+  padding-bottom: 6px;
+  margin-top: 40px;
+}
+
+p {
+  font-size: 18px;
+  color: #222222;
+  margin-bottom: 20px;
+}
+
+img {
+  display: block;
+  margin: 25px auto;
+  border: 2px solid #d00000;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  background-color: white;
+  padding: 6px;
+  max-width: 90%;
+}
+
+code {
+  background-color: #ffcccc;
+  color: #b00000;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+}
+</style>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This is a visual story about lunchtime patterns in a university
+cafeteria. Over several observation periods, I gathered data regarding
+how many people were queueing at different food stalls, what type of
+food was most commonly ordered, and any noteworthy behaviors or events
+that occurred during lunchtime.</p>
+<p>The primary aim was to understand patterns in food preferences and
+queuing behaviors, which could reflect not only popularity but also
+operational efficiency or student habits. This data was collected using
+a structured Google Form designed for observational logging, not
+surveys.</p>
+<p>In this story, I present three visualisations to share some key
+findings from the observations.</p>
+<hr />
+</div>
+<div id="food-preferences" class="section level2">
+<h2>Food Preferences</h2>
+<p><img src="plot1.png" width="80%" /></p>
+<p>The first visualisation is a bar chart showing the number of times
+each food type was observed being ordered. This gives a clear picture of
+which food types were most popular in the cafeteria.</p>
+<p>From the chart, we can see which categories—such as rice-based,
+noodle-based, or fast food—drew the most attention from students.
+Understanding these preferences could help with cafeteria planning,
+resource allocation, or promotion strategies. This also reflects broader
+food culture trends and dietary habits among students at our campus.</p>
+<hr />
+</div>
+<div id="queue-length-by-food-type" class="section level2">
+<h2>Queue Length by Food Type</h2>
+<p><img src="plot2.png" width="80%" /></p>
+<p>The second chart visualises the average queue length for each food
+type. This gives us insight into whether popular foods also lead to
+longer queues, or if some stalls manage to serve people more efficiently
+despite high demand.</p>
+<p>For example, a food type with a high number of orders but relatively
+short queues may indicate fast service. On the other hand, longer queues
+for certain types might suggest slower preparation or higher demand at
+specific times. This plot helps connect food preference with waiting
+time, offering a more complete understanding of the cafeteria
+experience.</p>
+<hr />
+</div>
+<div id="interesting-observations" class="section level2">
+<h2>Interesting Observations</h2>
+<p><img src="plot3.png" width="80%" /></p>
+<p>To complement the quantitative data, I also collected qualitative
+observations in a free-text field. These comments were analyzed for
+keywords such as “slow” or “cut,” which might indicate delays,
+congestion, or non-standard behavior.</p>
+<p>This visualisation categorizes how many times such keywords appeared
+in comments. Though based on subjective notes, these observations
+provide additional context. Comments mentioning slowness might reflect
+operational delays or student frustration, while keywords like “cut”
+could indicate queue-jumping or conflicts.</p>
+<p>Incorporating this narrative element helps round out the story with
+real-world color.</p>
+<hr />
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>This project demonstrates how observational data can be transformed
+into meaningful visual insights using tools like <code>ggplot2</code>.
+It also emphasizes the value of combining structured data with
+open-ended observations.</p>
+<p>By identifying which food types are most popular, how efficiently
+different stalls manage queues, and what behaviors or events are noticed
+during peak times, we can draw conclusions that are helpful not only for
+academic purposes but also for practical improvements.</p>
+<p>Creating this visual data story helped me improve my skills in data
+collection, cleaning, plotting, and communication. It’s a good example
+of how simple observations can lead to structured, insightful findings
+when combined with thoughtful analysis and clear visualisation.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
     "path": "~/Desktop/2025-2026/stats220/220 R/project4/project4/visual_data_story.Rmd",
     "project_path": "visual_data_story.Rmd",
     "type": "r_markdown",
-    "hash": "3470043328",
+    "hash": "1029616053",
     "contents": "",
     "dirty": false,
     "created": 1747196578321.0,
@@ -13,15 +13,15 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "6,24",
+        "cursorPosition": "6,25",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1747198266,
+    "lastKnownWriteTime": 1747211642,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1747198266979,
+    "last_content_update": 1747211642303,
     "read_only": false,
     "read_only_alternatives": []
 }
